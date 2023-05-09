@@ -14,4 +14,23 @@ $webapplication_user = "[% webapp_user %]";
 $webapplication_password = "[% webapp_password %]";
 $webapplication_socket = "[% webapp_socket %]";
 
+$attrDbms = '[% dbms %]';
+$attrDbName = "[% attr_db %]";
+$attrHost = '[% attr_host %]';
+$attrUser = '[% attr_user %]';
+$attrPass = '[% attr_password %]';
+
+$attrDBD = "$kb_top/lib/AttributesDBD.xml";
+$attrDBD = "$kb_top/modules/sprout/lib/AttributesDBD.xml" if ! -f $attrDBD;
+$attrOld = 0;
+
+[% IF db_environment -%]
+for my $ent (split(/,/, '[% db_environment %]'))
+{
+    my($k, $v) = split(/=/, $ent);
+    $ENV{$k} = $v;
+}
+[% END -%]
+
+
 1;

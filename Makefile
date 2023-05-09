@@ -44,6 +44,11 @@ TPAGE_ARGS = --define kb_top=$(TARGET) --define kb_runtime=$(DEPLOY_RUNTIME) --d
 	--define webapp_user=$(WEBAPP_USER) \
 	--define webapp_password=$(WEBAPP_PASSWORD) \
 	--define webapp_socket=$(WEBAPP_SOCKET) \
+	--define attr_db=$(ATTR_DB) \
+	--define attr_host=$(ATTR_HOST) \
+	--define attr_user=$(ATTR_USER) \
+	--define attr_password=$(ATTR_PASSWORD) \
+	--define db_environment=$(DB_ENVIRONMENT) \
 	--define sv_application_url=$(SV_APPLICATION_URL) \
 	--define sv_admin_email=$(SV_ADMIN_EMAIL)
 

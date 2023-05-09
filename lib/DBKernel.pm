@@ -125,6 +125,7 @@ sub new {
     #
     if ($dbms eq "mysql") {
         push(@opts, "mysql_local_infile=1");
+        push(@opts, "mysql_ssl=1");
     }
 
     # Decide if this is a pre-index or post-index DBMS. The "preIndex" variable in
@@ -187,6 +188,7 @@ Returns the handle to the database.
 
 sub Connect {
     my ($data_source, $dbuser, $dbpass, $dbms) = @_;
+    #print STDERR Dumper($data_source, $dbuser, $dbpass);
     my $retVal = DBI->connect( $data_source, $dbuser, $dbpass );
     if (! $retVal) {
         my $msg = ErrorMessage($dbms);
@@ -1122,6 +1124,7 @@ sub load_table {
             }
 	    	my $sql = "LOAD DATA $style $local INFILE '$file' $ignore_mode INTO TABLE $tbl FIELDS TERMINATED BY '$delim';";
 	    	Trace("SQL command: $sql") if T(SQL => 2);
+		#print "$sql\n";
             $rv = $dbh->do($sql);
         } elsif ($dbms eq "Pg") {
             Trace("Loading $tbl into PostGres using file $file.") if T(2);
