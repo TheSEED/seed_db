@@ -14,6 +14,22 @@ $webapplication_user = "[% webapp_user %]";
 $webapplication_password = "[% webapp_password %]";
 $webapplication_socket = "[% webapp_socket %]";
 
+#
+# Make a list of db name/credentials for fixing cross-database lookups in DBObjects where not 
+# all databases have the same access credentials
+#
+push(@dbs, { db => $webapplication_db, host => $webapplication_host, 
+	user => $webapplication_user, password => $webapplication_password, socket => $webapplication_socket }) if $webapplication_db;
+
+$rast_jobcache_db = "[% jobcache_db %]";
+$rast_jobcache_host = "[% jobcache_host %]";
+$rast_jobcache_user = "[% jobcache_user %]";
+$rast_jobcache_password = "[% jobcache_password %]";
+$rast_jobcache_socket = "[% jobcache_socket %]";
+
+push(@dbs, { db => $rast_jobcache_db, host => $rast_jobcache_host, 
+	user => $rast_jobcache_user, password => $rast_jobcache_password, socket => $rast_jobcache_socket }) if $rast_jobcache_db;
+
 $attrDbms = '[% dbms %]';
 $attrDbName = "[% attr_db %]";
 $attrHost = '[% attr_host %]';

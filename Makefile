@@ -44,6 +44,11 @@ TPAGE_ARGS = --define kb_top=$(TARGET) --define kb_runtime=$(DEPLOY_RUNTIME) --d
 	--define webapp_user=$(WEBAPP_USER) \
 	--define webapp_password=$(WEBAPP_PASSWORD) \
 	--define webapp_socket=$(WEBAPP_SOCKET) \
+	--define jobcache_db=$(JOBCACHE_DB) \
+	--define jobcache_host=$(JOBCACHE_HOST) \
+	--define jobcache_user=$(JOBCACHE_USER) \
+	--define jobcache_password=$(JOBCACHE_PASSWORD) \
+	--define jobcache_socket=$(JOBCACHE_SOCKET) \
 	--define attr_db=$(ATTR_DB) \
 	--define attr_host=$(ATTR_HOST) \
 	--define attr_user=$(ATTR_USER) \
@@ -71,7 +76,7 @@ endif
 
 web_config:
 	mkdir -p $(KB_TOP)/lib/WebApplication
-	for app in WebApplication SeedViewer ; do \
+	for app in WebApplication SeedViewer RAST ; do \
 	    $(TPAGE) --define sv_application_name=$$app $(TPAGE_ARGS) Config.pm.tt > $(KB_TOP)/lib/WebApplication/$$app.cfg; \
 	done
 

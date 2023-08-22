@@ -15,5 +15,9 @@ $DBPORT = undef;
 #
 $LOGIN_DEPENDENCIES = {};
 
+[% IF sv_application_name == 'RAST' -%]
+$RAST_TYPE = 'genome';
+[% END -%]
+
 #$REDIS_CONFIG = { server => "aspen.mcs.anl.gov:6379" };
 #$REDIS_DB = 10;
