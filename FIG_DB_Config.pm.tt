@@ -8,6 +8,7 @@ $dbhost = "[% dbhost %]";
 $dbuser = "[% dbuser %]";
 $dbpass = "[% dbpass %]";
 
+$webapplication_backend = "MySQL";
 $webapplication_db = "[% webapp_db %]";
 $webapplication_host = "[% webapp_host %]";
 $webapplication_user = "[% webapp_user %]";
