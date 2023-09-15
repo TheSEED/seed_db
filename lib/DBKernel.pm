@@ -140,6 +140,10 @@ sub new {
     	my $opts = join(";", @opts);
     	$data_source = "DBI:$dbms(AutoCommit => 1):dbname=$dbname;$opts";
     }
+    use Devel::Backtrace;
+    # print STDERR "\n\nDBConnect $data_source:\n";
+    # my $backtrace = Devel::Backtrace->new;
+    # print STDERR "$backtrace\n\n";
     Trace("Connect string is: $data_source") if T(3);
     my $dbh = Connect($data_source, $dbuser, $dbpass, $dbms);
     bless {
@@ -189,7 +193,28 @@ Returns the handle to the database.
 sub Connect {
     my ($data_source, $dbuser, $dbpass, $dbms) = @_;
     #print STDERR Dumper($data_source, $dbuser, $dbpass);
+
+    #
+    # Suppress WARNING: MYSQL_OPT_RECONNECT message from stderr
+    # (introduced in mysqlclient 8.0.34)
+    #
+    my $olderr;
+    if ($dbms eq 'mysql')
+    {
+	open($olderr, ">&", STDERR);
+	close(STDERR);
+	open(STDERR, ">", "/dev/null");
+    }
+    
+    #
     my $retVal = DBI->connect( $data_source, $dbuser, $dbpass );
+
+    if ($olderr)
+    {
+	close(STDERR);
+	open(STDERR, ">&", $olderr);
+    }
+    
     if (! $retVal) {
         my $msg = ErrorMessage($dbms);
         Confess($msg);
@@ -203,7 +228,7 @@ sub Connect {
         $retVal->do("pragma synchronous = OFF;");
 	$retVal->{sqlite_see_if_its_a_number} = 1;
     } elsif ($dbms eq "mysql") {
-        $retVal->{mysql_auto_reconnect} = 1;
+        $retVal->{mysql_auto_reconnect} = 0;
     }
     return $retVal;
 }
