@@ -28,6 +28,8 @@ use Tracer;
 use Data::Dumper;
 use FileHandle;
 use Carp;
+use POSIX ();
+use IO::Handle;
 
 =head1 Reduced-Instruction Database Kernel
 
@@ -199,11 +201,15 @@ sub Connect {
     # (introduced in mysqlclient 8.0.34)
     #
     my $olderr;
+    my $nullfh;
     if ($dbms eq 'mysql')
     {
-	open($olderr, ">&", STDERR);
-	close(STDERR);
-	open(STDERR, ">", "/dev/null");
+	# dup2-based fd redirect: the close/open form does not always reuse fd 2
+	# (verified live 2026-11-05: fd 2 stayed on error.log in ~4% of calls)
+	STDERR->flush();
+	open($nullfh, ">", "/dev/null");
+	$olderr = POSIX::dup(2);
+	POSIX::dup2(fileno($nullfh), 2) if defined $olderr;
     }
     
     #
@@ -211,8 +217,10 @@ sub Connect {
 
     if ($olderr)
     {
-	close(STDERR);
-	open(STDERR, ">&", $olderr);
+	STDERR->flush();
+	POSIX::dup2($olderr, 2);
+	POSIX::close($olderr);
+	close($nullfh);
     }
     
     if (! $retVal) {
@@ -228,7 +236,8 @@ sub Connect {
         $retVal->do("pragma synchronous = OFF;");
 	$retVal->{sqlite_see_if_its_a_number} = 1;
     } elsif ($dbms eq "mysql") {
-        $retVal->{mysql_auto_reconnect} = 0;
+	    #$retVal->{mysql_auto_reconnect} = 0;
+	    # Hush the warning.
     }
     return $retVal;
 }
